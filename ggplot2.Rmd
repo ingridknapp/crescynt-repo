@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(tidyverse)
+library(ggthemes)
 ```
 
 ```{r}
@@ -38,5 +39,33 @@ ggplot(mpg, aes(x = hwy, y = cty, size = class, color = fl)) +
 ```{r}
 ggplot(mpg,aes(x=displ, y= hwy)) +
   geom_point(alpha = 0.4, color = "blue")
+```
+
+```{r}
+ggplot(mpg,aes(x=displ, y= cty, color = class)) +
+  geom_point() +
+  facet_wrap(~ manufacturer, ncol=5) +
+theme_bw()
+```
+
+```{r}
+ggplot(mpg,aes(x=drv, y= hwy)) +
+  geom_violin() 
+ 
+```
+```{r}
+ggplot(mpg,aes(x=displ, y= hwy)) +
+  geom_point() +
+  geom_smooth() +
+labs(title = "Engine size and highway mileage (mpg)" ,
+     x = "Engine size (liters displaced)",
+     y = "Highway mileage (mpg)")
+
+```
+```{r}
+myplot <- ggplot(mpg, aes(x= fl, fill = class)) +
+  geom_bar(position = "dodge")
+
+ggsave("example_plot.png", plot = myplot, width = 15, height = 15, units = 'cm')
 ```
 
