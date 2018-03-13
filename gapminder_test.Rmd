@@ -8,11 +8,15 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
+#Notebook on how to do all of this "http://ohi-science.org/data-science-training/dplyr.html"
+# Go to help-cheatsheets-data transformation with dplyr
+#load packages
+#Shortcuts Ctrl and Enter (run that line of code); Alt and - (<-), put cursor in the function and press f1-gives you thehelp function
 ```{r}
 library(tidyverse)
 ```
 # the red crosses mean that the function (e.g. filter) in diplyr will mask the default filter. Have to use "stats::filter"" to use the default filter instead
+#gapminder dataset
 ```{r}
 gapminder <-  read.csv("https://raw.githubusercontent.com/jules32/2017-11-30-MBARI/gh-pages/data/gapminder.csv")
 ```
@@ -54,7 +58,7 @@ filter(gapminder,  lifeExp <30)
 ```{r}
 filter(gapminder, country == "Afghanistan", year == max(year))
 ```
-
+#starting to play with dplyr
 ```{r}
 dplyr::select(gapminder, country, year, pop)
 #selec is another way to filter, but gives all the results for that country
@@ -78,12 +82,78 @@ select(gapminder, -continent) %>% filter(year == 2007)
 
 ```{r}
 gapminder %>%
-  mutate(gdp_USD = gdpPercap * pop)
+  mutate(gdp = gdpPercap * pop)
 ```
 
 ```{r}
 gapminder %>%
-  mutate(gdp_USD = gdpPercap * pop) %>%
-  arrange (desc(gdp_USD))
+  mutate(gdp = gdpPercap * pop) %>%
+  arrange (desc(gdp))
+```
+```{r}
+gapminder %>%
+  group_by(country) %>%
+  mutate(gdp = gdpPercap * pop, max_gdp = max(gdp)) %>%
+  ungroup() 
+#need to ungroup after to get back to the full dataset instead of the grouped data
+```
+```{r}
+gapminder %>%
+  group_by(country) %>%
+  mutate(gdp = pop *gdpPercap) %>%
+  summarize(max_gdp = max(gdp))
+#to collapse into one summary column use summarize
+```
+```{r}
+#Joining tables
+#dplyr::left_join: join all the tables relative to the first table (on the left)- opposite for right
+#dplyr::inner_join: join common set of rows (so removes rows which don't match all the way with NA's)
+#dplyr::full_join: includes all columns and adds NA
+co2 <- readr::read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/co2.csv")
+```
+```{r}
+head(co2)
+summary(co2)
+```
+```{r}
+gap_2007 <- gapminder %>%
+  filter(year == 2007)
+```
+
+```{r}
+#just to make sure it got every country
+length(unique(gapminder$country))
+```
+```{r}
+left_join(gap_2007, co2, by = "country")
+```
+```{r}
+right_join(gap_2007, co2, by = "country")
+#anti-join or set diff are ways of finding where they don't match
+```
+
+##Tidyr
+```{r}
+gap_wide <- read.csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder_wide.csv")
+
+```
+
+
+
+
+```{r}
+gap_better <- gap_wide %>%
+  gather(observation, observ_value, -continent, -country) %>%
+  separate(observation, into = c("obs_type", "year"), sep = "_", convert = TRUE)
+#convert default is FALSE (changed year from a character to an integer)
+gap_better
+```
+```{r}
+unique(gap_better$obs_type)
+```
+```{r}
+gap_better %>%
+  spread(obs_type, observ_value)
+#everthing was gathered into one column, and now those 3 observation types have been seperated into 3 columns
 ```
 
