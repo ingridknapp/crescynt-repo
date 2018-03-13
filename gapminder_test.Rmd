@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 ```
-
+# the red crosses mean that the function (e.g. filter) in diplyr will mask the default filter. Have to use "stats::filter"" to use the default filter instead
 ```{r}
 gapminder <-  read.csv("https://raw.githubusercontent.com/jules32/2017-11-30-MBARI/gh-pages/data/gapminder.csv")
 ```
@@ -33,5 +33,57 @@ nrow(gapminder)
 #list unique and then select a column from the dataset to list e.g the number of countries in dataset, with $ sign if the beginning of string is the same it might miss it out of the final list
 unique(gapminder$country)
 #or unique(gapminder[,"continent"]), which is more specific
+```
+```{r}
+summary(gapminder)
+```
+```{r}
+#install.packages("skimr")
+library(skimr)
+skim(gapminder)
+```
+
+```{r}
+filter(gapminder, country == "New Zealand")
+```
+
+```{r}
+filter(gapminder,  lifeExp <30)
+```
+
+```{r}
+filter(gapminder, country == "Afghanistan", year == max(year))
+```
+
+```{r}
+dplyr::select(gapminder, country, year, pop)
+#selec is another way to filter, but gives all the results for that country
+
+```
+
+```{r}
+dplyr::select(gapminder, -continent)
+#can also see everything, excluding select columns
+```
+```{r}
+gapminder_no_cont <- dplyr::select(gapminder, -continent)
+dplyr::filter(gapminder_no_cont, year ==2007)
+```
+
+```{r}
+# %>% = a pipe (take the result from the left and put it into the function on the left)-same as above without having to make a new object, and don't have to specifify the worksheet "gapminder"
+select(gapminder, -continent) %>% filter(year == 2007)
+
+```
+
+```{r}
+gapminder %>%
+  mutate(gdp_USD = gdpPercap * pop)
+```
+
+```{r}
+gapminder %>%
+  mutate(gdp_USD = gdpPercap * pop) %>%
+  arrange (desc(gdp_USD))
 ```
 
