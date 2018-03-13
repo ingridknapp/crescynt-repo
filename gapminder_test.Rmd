@@ -1,0 +1,37 @@
+---
+title: "gapminder"
+author: "Ingrid"
+date: "March 13, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+gapminder <-  read.csv("https://raw.githubusercontent.com/jules32/2017-11-30-MBARI/gh-pages/data/gapminder.csv")
+```
+```{r}
+head(gapminder, 10)
+tail(gapminder)
+```
+```{r}
+str(gapminder)
+```
+
+```{r}
+dim(gapminder)
+ncol(gapminder)
+nrow(gapminder)
+```
+```{r}
+#list unique and then select a column from the dataset to list e.g the number of countries in dataset, with $ sign if the beginning of string is the same it might miss it out of the final list
+unique(gapminder$country)
+#or unique(gapminder[,"continent"]), which is more specific
+```
+
